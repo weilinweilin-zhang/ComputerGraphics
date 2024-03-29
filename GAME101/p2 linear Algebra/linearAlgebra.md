@@ -1,4 +1,14 @@
 
+### quadratic equations
+![alt text](image-3.png)
+$D=B^2 -4AC$ > 0 ,denote x1,x2 exist; =0 denote x1=x2,<0 denote x1 x2 is virtual number
+
+### 三角函数
+![alt text](image-4.png)
+![alt text](image-5.png)
+![alt text](image-6.png)
+sinA\a = sinB\b = sinC\c   
+$c^2 = a^2+b^2-2abcosC$
 
 ### 向量
 1、模大小和方向一样，不管起始位置，这样的向量是等价
@@ -17,6 +27,7 @@ $cos\theta$ = $\vec{a} * \vec{b}$/$|a||b|$
 ![alt text](image-2.png)
 
 点乘可以通过结果判断前和后，结果是否是正数
+常用于计算两个向量之间的夹角
 
 叉乘
 opengl 是右手定则，directx是左手定则     
