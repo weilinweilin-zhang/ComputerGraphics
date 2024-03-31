@@ -1,0 +1,40 @@
+
+### 逆矩阵
+逆矩阵，相当于回退操作，在旋转里面，旋转矩阵的逆相当旋转矩阵的转置
+
+在数学里面一个矩阵的逆刚好等于他的转置，这个矩阵叫做正交矩阵
+![alt text](image.png)
+### MVP
+model view project 
+过程类似拍照 图形学就是这样的   
+1、摆好pose model transformation   
+2、找好相机角度   
+3、投射 chees 拍摄   
+![alt text](image-3.png)
+### view transformation 试图变换
+可能一开始相机的角度就是有所偏差的，然后我们知道他当前当前的状态，然后我们知道把他，从齐次坐标系变到当前状态的变换矩阵，求个逆矩克即可，将当前的相机归位到正坐标系上。利用旋转矩阵是正交矩阵，逆为转置
+### 3D transformaion
+#### rotation
+绕着哪一行旋转，那一行列就不变
+发现绕着y轴的这个，这个右上角和左下角的符号跟其他两个有出入，这是因为叉乘的时候，得x叉乘z才能得到y（通过右手定则）所以多了一个负号(正常都是xyz这个顺序下去叉乘的,所以会有这种出入)
+![alt text](image-1.png)
+#### 旋转公式
+![alt text](image-2.png)
+### 投影变换 project transformation
+#### 正交投影 orthographic projection (不会带来近大远小的现象)
+![alt text](image-6.png)
+往z-向下看，这时候把z轴给拿到，得到的也是一张xy平面图
+#### 透视投影 perspective projection （更倾向与人实际看到的东西，平行线会相交感觉）
+从透视到正交(通过相似三角形计算求得)
+![alt text](image-7.png)
+相似三角形z不变
+![](image-8.png)
+就是一个点，经过透视矩阵变化，被挤压成这个向量坐标
+所以得出透视变换矩阵大概是这种样子 ,xy 是这样变化的
+![alt text](image-9.png)
+第三行z的变换 参数填入  
+![alt text](image-10.png)
+![alt text](image-4.png)
+
+
+
