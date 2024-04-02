@@ -25,6 +25,8 @@ model view project
 ![alt text](image-6.png)
 往z-向下看，这时候把z轴给拿到，得到的也是一张xy平面图
 #### 透视投影 perspective projection （更倾向与人实际看到的东西，平行线会相交感觉）
+(这个好像是要把梯形体，变成一个长方体，然后far plane是要往内挤的，变成和前面的平面一个的图形)
+
 从透视到正交(通过相似三角形计算求得)
 ![alt text](image-7.png)
 相似三角形z不变
@@ -32,8 +34,9 @@ model view project
 就是一个点，经过透视矩阵变化，被挤压成这个向量坐标
 所以得出透视变换矩阵大概是这种样子 ,xy 是这样变化的
 ![alt text](image-9.png)
-第三行z的变换 参数填入  
+第三行z的变换 参数填入（取一个特殊点，就是中心点，不管怎么挤压，他都是00f的中心点） z在近和远的平面上不变，利用这两个条件计算，那么对于中间的平面 z是怎么变化的
 ![alt text](image-10.png)
+![alt text](image-11.png)
 ![alt text](image-4.png)
 
 
