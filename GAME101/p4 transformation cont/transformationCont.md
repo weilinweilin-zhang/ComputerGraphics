@@ -55,9 +55,7 @@ model view project
 透视转换矩阵出来后，就可以转为正视矩阵查看
 ![alt text](image-14.png)
 
-<<<<<<< Updated upstream
 透视矩阵后，范围会在-1，1 三次方经典的立方体里面
-=======
 ![alt text](image-15.png)
 
 
@@ -73,7 +71,6 @@ ndc 标准化设备坐标
 解疑问：
 只要通过实例 fn 计算带入即可更加清楚关系
 
->>>>>>> Stashed changes
 
 疑问：远平面 投射在近平面应该显示的是二维的吧
 比较理解不了的，应该是z坐标在平面的显示吧
