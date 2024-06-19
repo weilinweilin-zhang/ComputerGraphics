@@ -19,6 +19,8 @@
     - [glfwSwapBuffers](#glfwswapbuffers)
   - [加载显存地址内容](#加载显存地址内容)
 - [问题](#问题)
+  - [glGenBuffers glCreateProgram 这些是cpu还是gpu生成的数据](#glgenbuffers-glcreateprogram-这些是cpu还是gpu生成的数据)
+  - [glLinkProgram(shaderprogram);  opengl链接什么时候会断开，最多链接几个](#gllinkprogramshaderprogram--opengl链接什么时候会断开最多链接几个)
 
 
 ## opengl
@@ -221,3 +223,20 @@ glfwInit 初始化
 ![alt text](image.png)
 ## 问题
 ![alt text](image-2.png)
+
+
+### glGenBuffers glCreateProgram 这些是cpu还是gpu生成的数据
+`glGenBuffers` 和 `glCreateProgram` 是 OpenGL API 的两个函数，它们用于在使用 OpenGL 进行图形编程时生成资源标识符。
+1. `glGenBuffers`：该函数用于生成缓冲区对象标识符，这些标识符代表可以用于存储顶点数据、索引数据、像素数据等的 GPU 内存块。当你调用 `glGenBuffers` 时，实际上是在 CPU 上请求生成一定数量的缓冲区标识符，这些标识符随后可以用来引用 GPU 中的缓冲区资源。但是，在这一步并不会在 GPU 上分配任何实际的内存，实际的内存分配通常在之后通过调用 `glBufferData` 或 `glBufferStorage` 来完成。
+2. `glCreateProgram`：该函数用于创建一个新的程序对象，这个程序对象在后续可以附加着色器（如顶点着色器、片元着色器等），用于 GPU 着色器管线。调用 `glCreateProgram` 会在 CPU 上创建标识符，但是关联的着色器代码的编译和链接以及最终的运行都是在 GPU 上进行的。
+简而言之，`glGenBuffers` 和 `glCreateProgram` 都是由 CPU 调用的 OpenGL API 函数，用于生成代表 GPU 资源的标识符，但它们并不直接在 GPU 上分配内存或创建资源。实际的 GPU 内存分配和着色器程序的创建、编译等操作发生在之后的步骤中。OpenGL API 作为 CPU 和 GPU 之间的桥梁，提供了一套调用机制来管理 GPU 资源和执行 GPU 计算任务。
+
+###  glLinkProgram(shaderprogram);  opengl链接什么时候会断开，最多链接几个
+`glLinkProgram(shaderprogram);` 是 OpenGL API 中用于链接一个着色器程序的函数。这里的“链接”指的是将编译后的着色器（如顶点着色器、片元着色器等）附加到一个程序对象上，并把它们链接成可以在 GPU 上执行的最终程序。链接过程会处理着色器之间的接口匹配，优化和整合代码，并确保着色器程序可以被正确地执行。
+一旦链接成功，着色器程序将保持链接状态，直到发生以下情况之一：
+1. 如果你显式地删除了着色器程序，使用 `glDeleteProgram`。
+2. 如果你的应用程序结束，OpenGL 上下文被销毁，那么所有与该上下文关联的资源（包括链接的着色器程序）也会被释放。
+3. 如果你链接了新的着色器到同一个程序对象上并再次调用 `glLinkProgram`，那么原来的链接状态会被新的链接操作所取代。
+至于同时可以链接多少个着色器程序，OpenGL 标准本身并没有设置硬性限制。理论上，限制数量取决于系统的内存和 GPU 资源。但在实践中，应用程序通常只会链接它们需要的那些着色器程序，因为每个链接的程序都会消耗宝贵的内存和其他系统资源。因此，开发者通常会根据需要创建和管理一定数量的着色器程序，并在运行时根据需要激活不同的程序。
+另外，值得注意的是，现代OpenGL应用程序可能会使用多个着色器程序，通过在渲染流程的不同部分切换当前活跃的着色器程序。一般情况下，会有一个着色器程序管理一个特定的渲染效果或者物体类型。通过调用 `glUseProgram` 来切换当前活跃的着色器程序，以便在绘制不同的对象或者效果时使用不同的渲染策略。
+总结来说，`glLinkProgram` 会在程序对象上创建一个链接状态，而这个链接状态会持续存在直到程序对象被显式删除、OpenGL上下文被销毁或者程序对象被重新链接为止，而理论上可以链接的着色器程序数量只受限于系统资源。

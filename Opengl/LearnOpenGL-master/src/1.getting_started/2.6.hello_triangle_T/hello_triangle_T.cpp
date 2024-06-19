@@ -38,6 +38,12 @@ const char* fragmentShaderSource = "#version 330 core\n"
 " FragColor = vec4(1.0f,0.5f,0.2f,1.0f);\n"
 "}\n\0";
 
+const char* fragmentShaderSource2 = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+" FragColor = vec4(0.2f,0.5f,0.2f,1.0f);\n"
+"}\n\0";
 int main()
 {
     // glfw: initialize and configure
@@ -102,6 +108,20 @@ int main()
         std::cout << fragmentinfolog;
     }
 
+    unsigned int fragmentShader2;
+    fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader2, 1, &fragmentShaderSource2,NULL);
+    glCompileShader(fragmentShader2);
+
+    int fragmantsuccess1;
+    char fragmentinfo2[512];
+    glGetShaderiv(fragmentShader2, GL_COMPILE_STATUS, &fragmantsuccess1);
+    if(!fragmantsuccess1)
+    {
+		glGetShaderInfoLog(fragmentShader2, 512, NULL,fragmentinfo2);
+        std::cout << fragmentinfo2;
+    }
+
     // 编译链接着色器
     unsigned int shaderprogram;
     shaderprogram = glCreateProgram();
@@ -109,12 +129,21 @@ int main()
     // 链接两个着色器
     glAttachShader(shaderprogram, vertexShader);
     glAttachShader(shaderprogram, fragmentShader);
+    // 链接着色器 ，什么时候切换下来
     glLinkProgram(shaderprogram);
 
+    unsigned int shaderprogram2;
+    shaderprogram2 = glCreateProgram();
+    // 链接两个着色器
+    glAttachShader(shaderprogram2, vertexShader);
+    glAttachShader(shaderprogram2, fragmentShader2);
+    // 链接着色器 ，什么时候切换下来
+    glLinkProgram(shaderprogram2);
     // 程序创建创建玩链接 即可干掉了
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
+    glDeleteShader(fragmentShader2);
+    // 1
     if (0)
     {
 
@@ -157,8 +186,9 @@ int main()
 		return 0;
     }
 
+    // 2
     // 使用两个VBO VAO
-    if (1)
+    if (0)
     {
         float firstTriangle[] = {
 			-0.9f, -0.5f, 0.0f,  // left 
@@ -217,6 +247,70 @@ int main()
 		glDeleteProgram(shaderprogram);
 		glfwTerminate();
 		return 0;
+    }
+
+    //3
+    if (1)
+    {
+        float firstTriangle[] = {
+            -0.9f, -0.5f, 0.0f,  // left 
+            -0.0f, -0.5f, 0.0f,  // right
+            -0.45f, 0.5f, 0.0f,  // top 
+        };
+        float secondTriangle[] = {
+            0.0f, -0.5f, 0.0f,  // left
+            0.9f, -0.5f, 0.0f,  // right
+            0.45f, 0.5f, 0.0f   // top 
+        };
+        // 一个VAO绑定就是一个顶点数据
+        unsigned int VBOs[2], VAOs[2];
+        glGenVertexArrays(2, VAOs);
+        glGenBuffers(2, VBOs);
+
+        // 然后每次绑定信息 先绑定顶点数据，在绑定附加的数据
+        glBindVertexArray(VAOs[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+        // 塞入用户指定的数据
+        glBufferData(GL_ARRAY_BUFFER, sizeof(firstTriangle), firstTriangle, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);	// Vertex attributes stay the same
+        glEnableVertexAttribArray(0);
+
+
+        glBindVertexArray(VAOs[1]);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
+        // 塞入用户指定的数据
+        glBufferData(GL_ARRAY_BUFFER, sizeof(secondTriangle), secondTriangle, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // because the vertex data is tightly packed we can also specify 0 as the vertex attribute's stride to let OpenGL figure it out
+        glEnableVertexAttribArray(0);
+
+
+        // 绘制
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+
+        while (!glfwWindowShouldClose(window))
+        {
+            processInput(window);
+            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            // draw out  first triangle
+            glUseProgram(shaderprogram);
+            glBindVertexArray(VAOs[0]); //标记着
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+            // 绑定完之后就可以那这个顶点进行绘制
+            glUseProgram(shaderprogram2);
+            glBindVertexArray(VAOs[1]); //标记着
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
+        glDeleteVertexArrays(2, VAOs);
+        glDeleteBuffers(2, VBOs);
+        glDeleteProgram(shaderprogram);
+        glDeleteProgram(shaderprogram2);
+        glfwTerminate();
+        return 0;
     }
 
 
