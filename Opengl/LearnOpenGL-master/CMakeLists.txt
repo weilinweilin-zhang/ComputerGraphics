@@ -84,6 +84,7 @@ set(1.getting_started
     3.1.shaders_uniform
     3.2.shaders_interpolation
     3.3.shaders_class
+    3.4.shaders_T
     4.1.textures
     4.2.textures_combined
     4.4.textures_exercise2
