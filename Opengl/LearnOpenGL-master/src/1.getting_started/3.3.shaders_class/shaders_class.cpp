@@ -47,6 +47,8 @@ int main()
 
     // build and compile our shader program
     // ------------------------------------
+
+    // 读取并且 编译使用这个着色器
     Shader ourShader("3.3.shader.vs", "3.3.shader.fs"); // you can name your shader files however you like
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
