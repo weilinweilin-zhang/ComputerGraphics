@@ -9,6 +9,11 @@
       - [片段着色器](#片段着色器-1)
       - [链接程序](#链接程序)
     - [EBO渲染](#ebo渲染)
+  - [纹理](#纹理)
+    - [纹理单元](#纹理单元)
+    - [纹理过滤](#纹理过滤)
+    - [多级渐远纹理](#多级渐远纹理)
+    - [函数](#函数)
   - [原理-图形渲染管线（翻译应该为流程）](#原理-图形渲染管线翻译应该为流程)
 - [Glfw](#glfw)
   - [参数](#参数)
@@ -198,6 +203,82 @@ glDrawElements 函数
 ![alt text](image-5.png)
 
 流程生成VAO--绑定VAO--生成VBO赋予顶点数据--绑定定义赐予复制数据--生成EBO--绑定定义赋予共用点的index，然后使用着色器然后需然后 element
+
+
+
+
+### 纹理
+glTexParameteri()设置横纵坐标的包裹方式
+
+
+#### 纹理单元
+
+激活一个纹理单元然后绑定一个纹理数据
+
+一个纹理单元的位置值通常称为纹理单元
+
+OpenGL至少保证有16个纹理单元供你使用，也就是说你可以激活从GL_TEXTURE0到GL_TEXTRUE15。它们都是按顺序定义的，所以我们也可以通过GL_TEXTURE0 + 8的方式获得GL_TEXTURE8，这在当我们需要循环一些纹理单元的时候会很有用。
+
+给着色器里面的采样器，指定纹理单元的id ，即可实现采样，就是外面通过gluniform1i定位：
+类似
+glActiveTexture(GL_TEXTURE0);
+glBindTexture(GL_TEXTURE_2D, texture1);
+glActiveTexture(GL_TEXTURE1);
+glBindTexture(GL_TEXTURE_2D, texture2);
+glBindVertexArray(VAO);
+glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+纹理单元 0和1
+然后通过 gl设置
+glUniform1i(glGetUniformLocation(ourShader.ID,"texture1"),0)
+或者ourShader.setInt("texture",1);
+
+
+
+
+#### 纹理过滤
+邻近过滤 和线性过滤 
+邻近就是最相邻的像素色  
+线性就是插值   比较模糊，锯齿和颗粒感不会那么强烈
+GL_NEAREST产生了颗粒状的图案，我们能够清晰看到组成纹理的像素，而GL_LINEAR能够产生更平滑的图案
+
+#### 多级渐远纹理
+![alt text](image-8.png)
+主要是用于缩小，纹理放大不会使用多级渐远纹理
+
+#### 函数
+纹理也是根据id引用的。
+unsigned int texture；
+glgenTextures(1,&texture)
+
+然后绑定 2D 的目标伤
+glBindTextTure(GL_TEXTURE_2D,texeture)'
+然后可以娜这个GL_TEXTURE_2D 去干事情。
+
+获取用户传进来的数据
+glTexImage2D(GL_TEXTURE,0,GL_RGB,width,height,0,GL_RGB,GL_UNSIGNED_BYTE,data)
+第二参数 指定多级渐远纹理的级别
+第六个参数0  总是0历史问题
+当调用glTexImage2D时，当前绑定的纹理对象就会被附加上纹理图像。然而，目前只有基本级别(Base-level)的纹理图像被加载了，如果要使用多级渐远纹理，我们必须手动设置所有不同的图像（不断递增第二个参数）。或者，直接在生成纹理之后调用glGenerateMipmap。这会为当前绑定的纹理自动生成所有需要的多级渐远纹理。
+
+生成纹理后就可以释放内存了。
+
+步骤大致如下
+![alt text](image-9.png)
+指定 环绕和过滤方式
+
+应用纹理-在顶点着色器上 正常来说是平铺 ，两个点可以锁定平面坐标
+float vertices[] = {
+//     ---- 位置 ----       ---- 颜色 ----     - 纹理坐标 -
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // 右上
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // 右下
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // 左下
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // 左上
+};
+
+
+
+
 ### 原理-图形渲染管线（翻译应该为流程）
 opengl是3D控件，屏幕显示是2D，3D转2D就是通过opengl图形渲染管线
 ![alt text](image-1.png)
