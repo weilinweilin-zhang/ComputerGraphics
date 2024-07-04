@@ -77,32 +77,47 @@ int main()
 
     // 绑定顶点id
     glBindVertexArray(VAO); // 后续操作都在VAO这个id里面操作
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+    // 给gpu解析
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    // 解开一个就选中对应的layout id
+    glEnableVertexAttribArray(0);
+    
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)3);
+    glEnableVertexAttribArray(1);
 
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)6);
+    glEnableVertexAttribArray(2);
 
-    // load image, create texture and generate mipmaps
-    //data = stbi_load(FileSystem::getPath("resources/textures/awesomeface.png").c_str(), &width, &height, &nrChannels, 0);
-    //if (data)
-    //{
-    //    // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-    //    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    //    glGenerateMipmap(GL_TEXTURE_2D);
-    //}
-    //else
-    //{
-    //    std::cout << "Failed to load texture" << std::endl;
-    //}
-    //stbi_image_free(data);
+    
+    // 纹理
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // 纹理缠绕及过滤方式
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-    // -------------------------------------------------------------------------------------------
-    ourShader.use(); // don't forget to activate/use the shader before setting uniforms!
-    // either set it manually like so:
-    glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
-    // or set it via the texture class
-    ourShader.setInt("texture2", 1);
-
+    // 加载图片然后显示
+    int width, height, nrChannels;
+    unsigned char * data = stbi_load(FileSystem::getPath("resources/textures/container.jpg").c_str(),&width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "fail" << std::endl;
+    }
+    stbi_image_free(data);
 
     // render loop
     // -----------
@@ -117,6 +132,7 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        ourShader.use();
         // bind textures on corresponding texture units
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
