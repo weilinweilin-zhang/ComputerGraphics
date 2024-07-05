@@ -15,7 +15,7 @@
     - [多级渐远纹理](#多级渐远纹理)
     - [函数](#函数)
   - [原理-图形渲染管线（翻译应该为流程）](#原理-图形渲染管线翻译应该为流程)
-- [纹理](#纹理)
+- [纹理](#纹理-1)
 - [Glfw](#glfw)
   - [参数](#参数)
     - [glfwWindowHint 给窗口设置属性](#glfwwindowhint-给窗口设置属性)
@@ -204,12 +204,10 @@ glDrawElements 函数
 ![alt text](image-5.png)
 流程生成VAO--绑定VAO--生成VBO赋予顶点数据--绑定定义赐予复制数据--生成EBO--绑定定义赋予共用点的index，然后使用着色器然后需然后 element
 
-
-
-
 ### 纹理
 glTexParameteri()设置横纵坐标的包裹方式
-
+在片段着色器里面可以混合纹理和颜色
+![alt text](image-10.png)
 
 #### 纹理单元
 
@@ -234,7 +232,8 @@ glUniform1i(glGetUniformLocation(ourShader.ID,"texture1"),0)
 或者ourShader.setInt("texture",1);
 
 
-
+获取图像数据。要注意png 和jpg 设置顶gl_RGB 和gl_RGBA 通道的不同 
+glTexImage2D
 
 #### 纹理过滤
 邻近过滤 和线性过滤 
