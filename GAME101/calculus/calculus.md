@@ -67,3 +67,21 @@ dy/dx 为fx的导数    每一个点的导数
 
 这个是重点，将导数 和积分概念整成有一块
 ![alt text](image-9.png)
+
+
+## 向量计算
+向量点乘 （求两个向量之间的夹角）
+![](image-14.png)
+向量叉乘 (求法向量)
+![alt text](image-15.png)
+
+
+## 矩阵
+矩阵相乘
+1、矩阵缩放矩阵 对角线数值成上去
+![](image-17.png)
+2、矩阵位移
+最后一列
+![alt text](image-18.png)
+3、矩阵旋转
+![alt text](image-19.png)

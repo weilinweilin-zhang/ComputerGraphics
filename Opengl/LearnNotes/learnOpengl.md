@@ -288,25 +288,11 @@ opengl是3D控件，屏幕显示是2D，3D转2D就是通过opengl图形渲染管
 ![alt text](image-1.png)
 
 ## 纹理
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+多张纹理
+// 这出初始化为单位矩阵
+glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+一个VAO 可以画多次属性
+![alt text](image-11.png)
 ## Glfw
 opengl轻量工具集，绘制管理gl窗口上下文 ，提供键盘手柄鼠标输入设备
 
