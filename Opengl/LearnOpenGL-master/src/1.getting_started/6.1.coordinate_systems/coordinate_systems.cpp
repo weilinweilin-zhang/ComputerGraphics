@@ -173,9 +173,9 @@ int main()
         glm::mat4 model         = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         glm::mat4 view          = glm::mat4(1.0f);
         glm::mat4 projection    = glm::mat4(1.0f);
-        model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
+        model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(1.0f, 0.0f, 0.0f));
         //model = glm::rotate(model, glm::radians(30.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        view  = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.05f));  // 这个视角得让平移到能能看得到的地方
+        view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -8.0f));  // 这个视角得让平移到能能看得到的地方
 
         float left = -SCR_WIDTH / 2.0f;
         float right = SCR_WIDTH / 2.0f;
