@@ -193,9 +193,8 @@ int main()
 
     // pass projection matrix to shader (as projection matrix rarely changes there's no need to do this per frame)
     // -----------------------------------------------------------------------------------------------------------
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(65.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     ourShader.setMat4("projection", projection); 
-
 
     // render loop
     // -----------
@@ -224,6 +223,8 @@ int main()
         float radius = 10.0f;
         float camX = static_cast<float>(sin(glfwGetTime()) * radius);
         float camZ = static_cast<float>(cos(glfwGetTime()) * radius);
+        
+        // lookat 第一行是 摄像机的坐标，不用考虑  负方向的坐标
         view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ourShader.setMat4("view", view);
 
