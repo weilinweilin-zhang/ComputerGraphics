@@ -40,6 +40,7 @@
   - [透视投影矩阵的结果   过近和过远都会被干掉，不会渲染](#透视投影矩阵的结果---过近和过远都会被干掉不会渲染)
   - [自由移动](#自由移动)
     - [欧拉角](#欧拉角)
+  - [摄像机类](#摄像机类)
 
 
 ## opengl
@@ -445,3 +446,55 @@ pitch 绕着x轴的 俯仰角 y轴 z滚转角 像开飞机一样
 2. **光照计算**：许多光照计算（如计算光线与法线的点积）需要使用单位向量。
 3. **摄像机运动**：由于单位向量表示纯粹的方向，常用于表示摄像机的前进方向、右方向和上方向。
 4. **避免浮点运算问题**：长向量会导致数值计算不稳定，通过归一化可以提高计算的稳定性。
+
+
+
+
+### 摄像机类
+回顾一下 创建步骤
+VAO 是一个指定的容器
+
+
+![alt text](image-17.png)
+    void updateCameraVectors()
+    {
+        // calculate the new Front vector
+        glm::vec3 front;
+        front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+        front.y = sin(glm::radians(Pitch));
+        front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+        Front = glm::normalize(front);
+        // also re-calculate the Right and Up vector
+        Right = glm::normalize(glm::cross(Front, WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+        Up    = glm::normalize(glm::cross(Right, Front));
+    }
+ front 这是怎么计算的
+
+其实画个图就可以明白 
+
+先看 xy 平面，也就是俯仰角， 那么front的 y 就是这个sin pitch，x轴就是cos pitch
+ ![alt text](image-18.png)
+
+但是在偏航角的 yaw中，这个里面，也会影响 xz ，下面两个平面坐标系相乘即可得到front向量
+ ![alt text](image-19.png)
+
+ 那么 右轴和上轴也就好算了。
+
+
+鼠标输入角度怎么理解
+![alt text](image-20.png)
+![alt text](image-21.png)
+
+主要是记录着鼠标 的x和y的位置，在上一次的坐标记录点进行 叠加
+延申，像穿越火线那种游戏，应该是鼠标 拿起来就是更新一下记录点，然后视角移动在根据当前记录点去做view矩阵
+
+lookat这个函数意义
+1. **eye（眼睛位置/相机位置）**：这是相机在世界空间中的位置，也就是拍摄位置。它确定了视图的起点或者说相机的位置。
+2. **center（目标位置/看向中心）**：这是相机正在看的目标点。它决定了相机的看向方向，也就是视线的终点。如果你把相机比作人，这个向量指向这个人正在看的地方。
+摄像机的位置加上看的方,位置加上当前偏移的方向的向量。
+3. **up（上向量）**：这是一个用来定义相机的垂直方向的向量。通常，这个向量是 `(0, 1, 0)`，表示世界空间中的正y方向。如果你倾斜相机，这个向量可以用来保持视图的 "上" 方向。
+通过这三个向量，`glm::lookAt` 能生成一个视图矩阵，该矩阵可以用于将世界空间中的物体变换到相机视角下的坐标系，从而实现相机视角效果。
+正常这个 up是不会改变，除非你整个坐标系都发生了偏移
+
+
+
