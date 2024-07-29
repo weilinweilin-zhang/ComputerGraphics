@@ -35,10 +35,12 @@ int main()
 {
     // glfw: initialize and configure
     // ------------------------------
+    // 窗口的初始化
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -53,14 +55,17 @@ int main()
         glfwTerminate();
         return -1;
     }
+    // 设置上下文 以及相关的回调函数
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
+    // 捕获鼠标事件
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    // 加载glad 库文件
     // glad: load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -73,10 +78,12 @@ int main()
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
 
+    // 加载着色器 顶点着色器，和片段着色器
     // build and compile our shader zprogram
     // ------------------------------------
     Shader ourShader("7.4.camera.vs", "7.4.camera.fs");
 
+    // 设置顶点坐标
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices[] = {
@@ -135,15 +142,22 @@ int main()
         glm::vec3( 1.5f,  0.2f, -1.5f),
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
+
+
+    // 创建顶点 绑定VAO
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
     glBindVertexArray(VAO);
 
+
+    // 创建vbo 开辟gpu空间，然后填入自定义的顶点数据
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    // 解析字段  通过layout定位 解析的数据
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -152,6 +166,7 @@ int main()
     glEnableVertexAttribArray(1);
 
 
+    // 创建纹理，设置纹理过滤方式和围绕方式
     // load and create a texture 
     // -------------------------
     unsigned int texture1, texture2;
