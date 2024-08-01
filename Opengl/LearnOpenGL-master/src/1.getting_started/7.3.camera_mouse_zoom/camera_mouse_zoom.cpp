@@ -10,7 +10,15 @@
 #include <learnopengl/shader_m.h>
 
 #include <iostream>
-
+void printMatrix(const glm::mat4& matrix) {
+    const float* pSource = (const float*)glm::value_ptr(matrix);
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            std::cout << pSource[j * 4 + i] << " ";  // glm is column-major
+        }
+        std::cout << std::endl;
+    }
+}
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -130,15 +138,15 @@ int main()
     // world space positions of our cubes
     glm::vec3 cubePositions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f),
-        glm::vec3( 2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3( 2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3( 1.3f, -2.0f, -2.5f),
-        glm::vec3( 1.5f,  2.0f, -2.5f),
-        glm::vec3( 1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
+        glm::vec3( 2.0f,  8.0f, -15.0f),
+        glm::vec3(-1.5f, -6.2f, -2.5f),
+        glm::vec3(-3.8f, -12.0f, -12.3f),
+        glm::vec3( 2.4f, -10.4f, -3.5f),
+        glm::vec3(-1.7f,  9.0f, -7.5f),
+        glm::vec3( 1.3f, -4.0f, -2.5f),
+        glm::vec3( 1.5f,  0.0f, -2.5f),
+        glm::vec3( 1.5f,  3.2f, -1.5f),
+        glm::vec3(-1.3f,  5.0f, -1.5f)
     };
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -346,7 +354,10 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     front.y = sin(glm::radians(pitch));
     front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     cameraFront = glm::normalize(front);
-    std::cout << pitch << "     .....    " << yaw << std::endl;
+    std::cout << front.x << "     .....    " << front.y <<"     .....    " << front.z<< std::endl;
+    std::cout << std::endl;
+    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    printMatrix(view);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called

@@ -40,7 +40,6 @@
   - [透视投影矩阵的结果   过近和过远都会被干掉，不会渲染](#透视投影矩阵的结果---过近和过远都会被干掉不会渲染)
   - [自由移动](#自由移动)
     - [欧拉角](#欧拉角)
-  - [摄像机类](#摄像机类)
 
 
 ## opengl
@@ -384,8 +383,9 @@ glm::mat4 view; // 注意，我们将矩阵向我们要进行移动场景的反�
 ![
 ](image-12.png)
 lookat 可以关心 摄像机的位置，
-
-
+这个lookat 就是将摄像机坐标向量（eyes） 看向的位置（center） 还有向上向量，在内部，
+计算成，前向量 ，右轴，上轴，还有最后一列是相反的坐标
+![alt text](image-26.png)
 
 ### 您的示例解释
 下面这段代码：
@@ -441,64 +441,16 @@ pitch 绕着x轴的 俯仰角 y轴 z滚转角 像开飞机一样
 这个欧拉角就是，xian
 
 
+
+角度的定义，就是坐标轴不懂，相机动形成的角度。
+在OpenGL中，欧拉角（Euler Angles）通常用来描述摄像机的方向。欧拉角由三个角度组成，分别是绕三个主轴（通常是x、y、z轴）的旋转角度。这里有两种主要的理解方式：摄像机与坐标轴的角度和坐标轴与摄像机的角度。
+1. **摄像机与坐标轴的角度**：
+   - 这是指摄像机相对于固定的世界坐标轴的旋转。这种解释方式通常比较直观，因为你在思考摄像机如何在一个固定的三维空间内进行旋转。
+   - 例如，如果说摄像机绕y轴旋转30度，我们一般就是说摄像机相对于世界的y轴旋转了30度。
+   - 欧拉角通常按照“Yaw（偏航），Pitch（俯仰），Roll（滚转）”的顺序来应用。这意味着你首先绕y轴旋转（Yaw），其次绕新的x轴旋转（Pitch），最后绕新的z轴旋转（Roll）。
+
 简单来说，`glm::normalize`的主要作用是将任意长度的向量转换为长度为1的向量。这在计算机图形学中有很多重要的用途，包括但不限于：
 1. **方向保持不变**：归一化后的向量与原向量方向相同，只是长度变为1。
 2. **光照计算**：许多光照计算（如计算光线与法线的点积）需要使用单位向量。
 3. **摄像机运动**：由于单位向量表示纯粹的方向，常用于表示摄像机的前进方向、右方向和上方向。
 4. **避免浮点运算问题**：长向量会导致数值计算不稳定，通过归一化可以提高计算的稳定性。
-
-
-
-
-### 摄像机类
-回顾一下 创建步骤
-VAO 是一个指定的容器
-
-
-![alt text](image-17.png)
-    void updateCameraVectors()
-    {
-        // calculate the new Front vector
-        glm::vec3 front;
-        front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-        front.y = sin(glm::radians(Pitch));
-        front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-        Front = glm::normalize(front);
-        // also re-calculate the Right and Up vector
-        Right = glm::normalize(glm::cross(Front, WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-        Up    = glm::normalize(glm::cross(Right, Front));
-    }
- front 这是怎么计算的
-
-其实画个图就可以明白 
-
-先看 xy 平面，也就是俯仰角， 那么front的 y 就是这个sin pitch，x轴就是cos pitch
- ![alt text](image-18.png)
-
-但是在偏航角的 yaw中，这个里面，也会影响 xz ，下面两个平面坐标系相乘即可得到front向量
- ![alt text](image-19.png)
-
- 那么 右轴和上轴也就好算了。
-
-
-鼠标输入角度怎么理解
-![alt text](image-20.png)
-![alt text](image-21.png)
-
-主要是记录着鼠标 的x和y的位置，在上一次的坐标记录点进行 叠加
-延申，像穿越火线那种游戏，应该是鼠标 拿起来就是更新一下记录点，然后视角移动在根据当前记录点去做view矩阵
-
-lookat这个函数意义
-1. **eye（眼睛位置/相机位置）**：这是相机在世界空间中的位置，也就是拍摄位置。它确定了视图的起点或者说相机的位置。
-2. **center（目标位置/看向中心）**：这是相机正在看的目标点。它决定了相机的看向方向，也就是视线的终点。如果你把相机比作人，这个向量指向这个人正在看的地方。
-摄像机的位置加上看的方,位置加上当前偏移的方向的向量。
-3. **up（上向量）**：这是一个用来定义相机的垂直方向的向量。通常，这个向量是 `(0, 1, 0)`，表示世界空间中的正y方向。如果你倾斜相机，这个向量可以用来保持视图的 "上" 方向。
-通过这三个向量，`glm::lookAt` 能生成一个视图矩阵，该矩阵可以用于将世界空间中的物体变换到相机视角下的坐标系，从而实现相机视角效果。
-正常这个 up是不会改变，除非你整个坐标系都发生了偏移
-
-
-// lookat 内部还要通过 坐标位置，向前的向量 计算 上轴，右轴，坐标位置  只是外面包装了一下
-![alt text](image-23.png)
-
-摄像机的位置便宜就是 加上向前的位置乘以速度
-![alt text](image-22.png)
