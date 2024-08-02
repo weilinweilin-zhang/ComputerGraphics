@@ -324,6 +324,8 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
 
+
+    std::cout << xpos << "     ---------    " << ypos <<std::endl;
     if (firstMouse)
     {
         lastX = xpos;
@@ -343,6 +345,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     yaw += xoffset;
     pitch += yoffset;
 
+    std::cout << xoffset << "     +++++++    " << yoffset <<std::endl;
     // make sure that when pitch is out of bounds, screen doesn't get flipped
     if (pitch > 89.0f)
         pitch = 89.0f;
@@ -354,10 +357,12 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     front.y = sin(glm::radians(pitch));
     front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     cameraFront = glm::normalize(front);
-    std::cout << front.x << "     .....    " << front.y <<"     .....    " << front.z<< std::endl;
-    std::cout << std::endl;
-    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-    printMatrix(view);
+    
+    std::cout << pitch << "     .....    " << yaw <<std::endl;
+    //std::cout << front.x << "     .....    " << front.y <<"     .....    " << front.z<< std::endl;
+    //std::cout << std::endl;
+    //glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    //printMatrix(view);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
