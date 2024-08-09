@@ -31,7 +31,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // lighting
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(1.2f, 1.0f, 0.0f);
 
 int main()
 {
@@ -172,8 +172,11 @@ int main()
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        float timeValue = (float)glfwGetTime();
+        float rotateValue = (sin(timeValue) / 2.0f) + 0.5f;
+        lightPos = glm::vec3(1.2f* rotateValue,3* rotateValue,0);
         // be sure to activate shader when setting uniforms/drawing objects
+        // 这个着色器program用了顶点加上片段，即可继续直接使用上不同的uniform
         lightingShader.use();
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
@@ -188,6 +191,7 @@ int main()
 
         // world transformation
         glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(4,0,0));
         lightingShader.setMat4("model", model);
 
         // render the cube
@@ -200,6 +204,7 @@ int main()
         lightCubeShader.setMat4("projection", projection);
         lightCubeShader.setMat4("view", view);
         model = glm::mat4(1.0f);
+        // 这个主要是转移到光源一样的位置,实现方块才是光源
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
         lightCubeShader.setMat4("model", model);
@@ -241,6 +246,10 @@ void processInput(GLFWwindow *window)
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+        camera.ProcessKeyboard(DOWN, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        camera.ProcessKeyboard(UP, deltaTime);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
