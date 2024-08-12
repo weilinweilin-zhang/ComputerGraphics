@@ -185,10 +185,13 @@ int main()
         lightColor.z = static_cast<float>(sin(glfwGetTime() * 1.3));
         glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
         glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+        // 光照带着是物体显示 分量
         lightingShader.setVec3("light.ambient", ambientColor);
         lightingShader.setVec3("light.diffuse", diffuseColor);
         lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
+
+        // 材质决定着物体显示的颜色
         // material properties
         lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
         lightingShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
@@ -212,6 +215,10 @@ int main()
 
         // also draw the lamp object
         lightCubeShader.use();
+
+        lightCubeShader.setVec3("light.ambient", ambientColor);
+        lightCubeShader.setVec3("light.diffuse", diffuseColor);
+        lightCubeShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
         lightCubeShader.setMat4("projection", projection);
         lightCubeShader.setMat4("view", view);
         model = glm::mat4(1.0f);
@@ -256,6 +263,10 @@ void processInput(GLFWwindow *window)
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+        camera.ProcessKeyboard(DOWN, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        camera.ProcessKeyboard(UP, deltaTime);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
