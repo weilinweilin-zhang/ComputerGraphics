@@ -186,10 +186,10 @@ int main()
         glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
         glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
         // 光照带着是物体显示 分量
+        // 带的就是三种方面的光照  环境漫反射镜像，不过镜面是材质那边的，所以设置为1
         lightingShader.setVec3("light.ambient", ambientColor);
         lightingShader.setVec3("light.diffuse", diffuseColor);
         lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-
 
         // 材质决定着物体显示的颜色
         // material properties

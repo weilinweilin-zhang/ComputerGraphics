@@ -114,7 +114,9 @@ int main()
     }
     stbi_image_free(data);
 
-
+    glEnable(GL_BLEND);
+    // …Ë÷√ªÏ∫œ∫Ø ˝
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))

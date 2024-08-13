@@ -31,7 +31,7 @@ void main()
     // diffuse 
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(light.position - FragPos);
-    float diff = max(dot(norm, lightDir), 0.0);
+    float diff = dot(norm, lightDir);
     vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;  
     
     // specular
@@ -42,4 +42,15 @@ void main()
         
     vec3 result = ambient + diffuse + specular;
     FragColor = vec4(result, 1.0);
+
+    // 在顶点着色器里面通过坐标计算，在这里来的，中间都经过光栅化做一层加权平均数，然后在片段后获取真实的平均数
+    // 纹理 顶点坐标 法向量也是 也进行加权的。
+    // 获取纹理坐标
+    //vec3 ambient =light.ambient * texture(material.diffuse,TexCoords).rgb;
+    // 法向量 在顶点着色器里面传进来
+    //vec3 norm = normalize(Normal);
+    //vec3 lightDir = normalize(light.position - FragPos);
+    // 防止负数
+    //float diff = max(dot(norm,lightDir),0.0);
+
 } 
