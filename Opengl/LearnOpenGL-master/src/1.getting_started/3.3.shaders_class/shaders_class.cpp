@@ -53,6 +53,8 @@ int main()
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
+    // 一个片段三种颜色 通过加权插值 得到混合色
+    // 加权得通过顶点着色器里面传进来的，然后进行光栅化进行加权计算，uniform 是直接确定的颜色了
     float vertices[] = {
         // positions         // colors
          0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right

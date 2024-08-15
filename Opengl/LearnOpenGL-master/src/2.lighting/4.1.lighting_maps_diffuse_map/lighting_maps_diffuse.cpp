@@ -162,7 +162,7 @@ int main()
     // shader configuration
     // --------------------
     lightingShader.use(); 
-    // 这个就是着色器 里面记录sample 纹理单元
+    // 这个就是着色器 里面记录sample 纹理单元 ,在绘制的时候 在激活纹理单元
     lightingShader.setInt("material.diffuse", 0);
     glEnable(GL_BLEND);
     // 设置混合函数
@@ -187,6 +187,7 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // 着色器 跟 vao都是资源管理
         // be sure to activate shader when setting uniforms/drawing objects
         lightingShader.use();
         lightingShader.setVec3("light.position", lightPos);
@@ -198,8 +199,6 @@ int main()
         lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
         // material properties
-        // 把 
-
         lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
         lightingShader.setFloat("material.shininess", 64.0f);
 
@@ -217,11 +216,10 @@ int main()
         // bind diffuse map
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
-
+        // 纹理这些是共享的，然后 vao顶点管理器，记录里面的数据
         // render the cube
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
 
         // also draw the lamp object
         lightCubeShader.use();

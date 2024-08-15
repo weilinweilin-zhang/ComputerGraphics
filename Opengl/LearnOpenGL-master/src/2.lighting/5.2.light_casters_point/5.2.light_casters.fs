@@ -14,6 +14,8 @@ struct Light {
     vec3 diffuse;
     vec3 specular;
 	
+
+    // 计算系数
     float constant;
     float linear;
     float quadratic;
@@ -46,8 +48,13 @@ void main()
     
     // attenuation
     float distance    = length(light.position - FragPos);
+    // 倒数的二次函数，近的变化类似线性，远的二次函数起作用
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+    //float distance = length(light.position - FragPos);
+    // 这个就是根据距离 计算衰减的程度
+    //float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic*(distance*distance));
 
+    // 衰减，所有的光线都要进行衰减
     ambient  *= attenuation;  
     diffuse   *= attenuation;
     specular *= attenuation;   

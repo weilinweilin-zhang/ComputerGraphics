@@ -31,6 +31,7 @@ void main()
   	
     // diffuse 
     vec3 norm = normalize(Normal);
+    // 这个光是直接射向片段表面方向
     vec3 lightDir = normalize(light.position - FragPos);
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;  
@@ -41,7 +42,7 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;  
     
-      // emission
+      // emission // 就是贴上图 也可以显示上
     vec3 emission = texture(material.emission, TexCoords).rgb;
         
     vec3 result = ambient + diffuse + specular + emission;
