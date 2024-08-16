@@ -32,15 +32,20 @@ uniform Light light;
 
 void main()
 {
+    // 光线的方向，就是光线到片段的方向夹角
     vec3 lightDir = normalize(light.position - FragPos);
     
     // check if lighting is inside the spotlight cone
+    // 余弦值 两个单位向量点乘
     float theta = dot(lightDir, normalize(-light.direction)); 
     
+    // 这个范围只是用来 判断的 cutoff 是否有在里面
+    // 余弦值进行比较 这个区间单调递减 所以该判断合理
     if(theta > light.cutOff) // remember that we're working with angles as cosines instead of degrees so a '>' is used.
     {    
         // ambient
         vec3 ambient = light.ambient * texture(material.diffuse, TexCoords).rgb;
+        //vec3 ambient = light.ambient * texture(material.diffuse, TexCoords).rgb;
         
         // diffuse 
         vec3 norm = normalize(Normal);
