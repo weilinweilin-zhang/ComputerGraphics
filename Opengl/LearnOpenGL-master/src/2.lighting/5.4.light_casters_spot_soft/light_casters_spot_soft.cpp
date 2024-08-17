@@ -199,12 +199,15 @@ int main()
         lightingShader.use();
         lightingShader.setVec3("light.position", camera.Position);
         lightingShader.setVec3("light.direction", camera.Front);
+
+        // ƒ⁄»¶
         lightingShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+        // Õ‚»¶
         lightingShader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
         lightingShader.setVec3("viewPos", camera.Position);
 
         // light properties
-        lightingShader.setVec3("light.ambient", 0.1f, 0.1f, 0.1f);
+        lightingShader.setVec3("light.ambient", 0.5f, 0.5f, 0.5f);
         // we configure the diffuse intensity slightly higher; the right lighting conditions differ with each lighting method and environment.
         // each environment and lighting type requires some tweaking to get the best out of your environment.
         lightingShader.setVec3("light.diffuse", 0.8f, 0.8f, 0.8f);
