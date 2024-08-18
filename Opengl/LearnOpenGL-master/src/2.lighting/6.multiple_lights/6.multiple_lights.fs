@@ -120,6 +120,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     return (ambient + diffuse + specular);
 }
 
+// 聚光也有 手电筒也有 衰减和内外切
 // calculates the color when using a spot light.
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
