@@ -45,6 +45,7 @@ public:
     vector<Texture>      textures;
     unsigned int VAO;
 
+    // 每个网格都有自己的VAO 的顶点纹理坐标
     // constructor
     Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
     {
