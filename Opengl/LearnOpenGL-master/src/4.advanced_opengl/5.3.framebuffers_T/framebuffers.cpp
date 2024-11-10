@@ -189,35 +189,66 @@ int main()
 
     // shader configuration
     // --------------------
+    // 设置纹理单元
     shader.use();
     shader.setInt("texture1", 0);
 
     screenShader.use();
     screenShader.setInt("screenTexture", 0);
 
+    // 帧缓冲
     // framebuffer configuration
     // -------------------------
+    
     unsigned int framebuffer;
     glGenFramebuffers(1, &framebuffer);
+    // 绑定这个宏
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    // create a color attachment texture
+    
+    // 创建一个纹理附件  ，也可以是rbo
     unsigned int textureColorbuffer;
     glGenTextures(1, &textureColorbuffer);
+    // 绑定当前纹理 对他进行操作。
     glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-    // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
+
     unsigned int rbo;
-    glGenRenderbuffers(1, &rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
-    // now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
+    glGenRenderbuffers(GL_RENDERBUFFER, &rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
+    // rbo作为附件
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_STENCIL_ATTACHMENT,GL_RENDERBUFFER,rbo);
+    
+    // 没有准备好
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        cout << "error";
+    // 那么这时候 fbo的内容，会同时给 texture和rbo
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);  // 恢复到默认缓冲帧
+     // 目前也只是给两个 fbo的附件创建 条件，没有内容
+
+    //unsigned int framebuffer;
+    //glGenFramebuffers(1, &framebuffer);
+    //glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    //// create a color attachment texture
+    //unsigned int textureColorbuffer;
+    //glGenTextures(1, &textureColorbuffer);
+    //glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+    //// create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
+    //unsigned int rbo;
+    //glGenRenderbuffers(1, &rbo);
+    //glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
+    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
+    //// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
+    //if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    //    cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // draw as wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -277,9 +308,6 @@ int main()
         // clear all relevant buffers
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
         glClear(GL_COLOR_BUFFER_BIT);
-
-
-        // 先绘制到这个texturebuffer obj上面，然后再将数据 渲染上屏幕，这样的话 就是这个screen的着色器只要考虑这个纹理了
 
         screenShader.use();
         glBindVertexArray(quadVAO);

@@ -135,6 +135,7 @@ set(4.advanced_opengl
     3.3.blending_sort_T
     5.1.framebuffers
     5.2.framebuffers_exercise1
+    5.3.framebuffers_T
     6.1.cubemaps_skybox
     6.2.cubemaps_environment_mapping
     8.advanced_glsl_ubo
