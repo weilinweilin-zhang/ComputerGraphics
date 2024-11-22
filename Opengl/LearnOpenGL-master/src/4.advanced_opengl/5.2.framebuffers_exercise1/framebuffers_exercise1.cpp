@@ -136,6 +136,8 @@ int main()
         -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
          5.0f, -0.5f, -5.0f,  2.0f, 2.0f
     };
+
+    // 这里就是镜像区域为什么那么小的问题
     float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates. NOTE that this plane is now much smaller and at the top of the screen
         // positions   // texCoords
         -0.3f,  1.0f,  0.0f, 1.0f,
@@ -247,6 +249,7 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // 趁机看一下镜像相关的东西
         shader.use();
         glm::mat4 model = glm::mat4(1.0f);
         camera.Yaw   += 180.0f; // rotate the camera's yaw 180 degrees around

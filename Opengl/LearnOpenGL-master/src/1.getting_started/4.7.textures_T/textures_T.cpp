@@ -132,6 +132,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBindTexture(GL_TEXTURE_2D, texture);
+        glGenerateMipmap(GL_TEXTURE_2D);
         ourShader.use();
         // bind textures on corresponding texture units
         glBindVertexArray(VAO);

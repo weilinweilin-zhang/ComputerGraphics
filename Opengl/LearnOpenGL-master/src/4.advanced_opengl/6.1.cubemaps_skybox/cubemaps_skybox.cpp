@@ -211,7 +211,7 @@ int main()
     // shader configuration
     // --------------------
     shader.use();
-    shader.setInt("texture1", 0);
+    shader.setInt("texture1", 1);
 
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
@@ -245,8 +245,6 @@ int main()
         shader.setMat4("projection", projection);
         // cubes
         glBindVertexArray(cubeVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, cubeTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
@@ -258,8 +256,6 @@ int main()
         skyboxShader.setMat4("projection", projection);
         // skybox cube
         glBindVertexArray(skyboxVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // set depth function back to default
@@ -354,7 +350,7 @@ unsigned int loadTexture(char const * path)
             format = GL_RGB;
         else if (nrComponents == 4)
             format = GL_RGBA;
-
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -388,6 +384,7 @@ unsigned int loadCubemap(vector<std::string> faces)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);
+    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
     int width, height, nrChannels;

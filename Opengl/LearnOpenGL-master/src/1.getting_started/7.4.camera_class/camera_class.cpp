@@ -143,7 +143,7 @@ int main()
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
-
+    glEnable(GL_PROGRAM_POINT_SIZE);
     // 创建顶点 绑定VAO
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -229,18 +229,10 @@ int main()
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        // per-frame time logic
-        // --------------------
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-
-        // input
-        // -----
         processInput(window);
-
-        // render
-        // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
