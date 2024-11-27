@@ -215,6 +215,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // 1. draw scene as normal in multisampled buffers
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glEnable(GL_DEPTH_TEST);
 
         // set transformation matrices		
         shader.use();
@@ -222,9 +224,9 @@ int main()
         shader.setMat4("projection", projection);
         shader.setMat4("view", camera.GetViewMatrix());
         shader.setMat4("model", glm::mat4(1.0f));
-
-
         // 2. now blit multisampled buffer(s) to normal colorbuffer of intermediate FBO. Image is stored in screenTexture
+
+
 
         // 3. now render quad with scene's visuals as its texture image
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
